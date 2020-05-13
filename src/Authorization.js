@@ -3,7 +3,7 @@
 const config             = require('config')
 const cookie             = require('cookie')
 const includes           = require('lodash.includes')
-const { Security }       = require('@slatestudio/common-service')
+const { Security }       = require('@kravc/common-service')
 const AccessDeniedError  = require('./errors/AccessDeniedError')
 const UnauthorizedError  = require('./errors/UnauthorizedError')
 const { verify, decode } = require('jsonwebtoken')

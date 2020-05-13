@@ -1,6 +1,6 @@
 {
-  "name": "@slatestudio/common-security",
-  "version": "1.0.0",
+  "name": "@kravc/common-security",
+  "version": "1.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,19 +9,19 @@
   "author": "Oleksandr Kravets",
   "license": "ISC",
   "dependencies": {
-    "config": "^3.3.0",
+    "config": "^3.3.1",
     "cookie": "^0.4.0",
     "jsonwebtoken": "^8.5.1",
     "lodash.includes": "^4.3.0"
   },
   "peerDependencies": {
-    "@slatestudio/common-service": "^3.7.0"
+    "@kravc/common-service": "^3.8.2"
   },
   "devDependencies": {
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
-    "mocha": "^6.2.2",
-    "nyc": "^14.1.1"
+    "mocha": "^7.1.1",
+    "nyc": "^15.0.1"
   },
   "nyc": {
     "exclude": [
