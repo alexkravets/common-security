@@ -1,4 +1,4 @@
 # Security
 
-Helper security class that implements operation authentication via `cookie` or
-`authorization` header.
+Helper class that implements user authorization via `cookie` or `authorization`
+header.
