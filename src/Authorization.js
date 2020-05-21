@@ -74,8 +74,10 @@ class Authorization {
       return { isAuthorized: false, error }
     }
 
+    const { publicKey } = this
+
     try {
-      verify(token, this.publicKey, { algorithms: [ this.constructor.algorithm ] })
+      verify(token, publicKey, { algorithms: [ this.constructor.algorithm ] })
 
     } catch (originalError) {
       const error = new UnauthorizedError()
