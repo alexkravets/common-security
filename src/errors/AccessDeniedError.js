@@ -6,7 +6,7 @@ class AccessDeniedError extends Error {
   }
 
   get code() {
-    return this.constructor.name
+    return 'AccessDeniedError'
   }
 }
 

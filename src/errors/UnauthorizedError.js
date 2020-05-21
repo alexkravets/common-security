@@ -6,7 +6,7 @@ class UnauthorizedError extends Error {
   }
 
   get code() {
-    return this.constructor.name
+    return 'UnauthorizedError'
   }
 }
 

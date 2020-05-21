@@ -1,36 +1,65 @@
 'use strict'
 
-const config             = require('config')
 const cookie             = require('cookie')
 const includes           = require('lodash.includes')
-const { Security }       = require('@kravc/common-service')
+const authorize          = require('./authorize')
 const AccessDeniedError  = require('./errors/AccessDeniedError')
 const UnauthorizedError  = require('./errors/UnauthorizedError')
 const { verify, decode } = require('jsonwebtoken')
 
-class Authorization extends Security {
+class Authorization {
+  static get in() {
+    return 'header'
+  }
+
+  static get type() {
+    return 'apiKey'
+  }
+
+  static get definition() {
+    return {
+      [this.name]: {
+        in:   this.in,
+        type: this.type,
+        name: this.name
+      }
+    }
+  }
+
+  static get algorithm() {
+    return 'RS256'
+  }
+
+  static authorize(headers, requirements) {
+    return authorize(headers, requirements)
+  }
+
+  constructor(headers) {
+    this._headers = headers
+  }
+
+  /* istanbul ignore next */
+  get publicKey() {
+    throw new Error(`Public key is undefined for "${this.constructor.name}"`)
+  }
+
   authorize(options, payload) {
     const { group } = payload
     return includes(options, group)
   }
 
-  getIdentity(payload) {
-    const { sub: did, group, accountId } = payload
-    return { did, group, accountId }
-  }
-
   async isAuthorized(options) {
     let token
 
-    const hasCookie = this._req.headers['set-cookie']
+    const hasCookie = this._headers['set-cookie']
 
     if (hasCookie) {
-      const cookies = cookie.parse(this._req.headers['set-cookie'])
+      const cookies = cookie.parse(this._headers['set-cookie'])
       token = cookies.authorization
     }
 
     if (!token) {
-      token = this._req.headers.authorization
+      token = this._headers.authorization
     }
 
     if (!token) {
@@ -39,14 +68,14 @@ class Authorization extends Security {
     }
 
     const object = decode(token, { complete: true })
+
     if (!object) {
       const error = new UnauthorizedError('Invalid authorization token')
       return { isAuthorized: false, error }
     }
 
     try {
-      const publicKey = config.get('authorization.publicKey')
-      verify(token, publicKey, { algorithms: ['RS256'] })
+      verify(token, this.publicKey, { algorithms: [ this.constructor.algorithm ] })
 
     } catch (originalError) {
       const error = new UnauthorizedError()
@@ -62,10 +91,7 @@ class Authorization extends Security {
       return { isAuthorized: false, error }
     }
 
-    const identity = this.getIdentity(payload)
-    const context  = { identity }
-
-    return { isAuthorized: true, context }
+    return { isAuthorized: true, identity: payload }
   }
 }
 
