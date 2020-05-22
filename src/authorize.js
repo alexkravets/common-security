@@ -1,19 +1,5 @@
 'use strict'
 
-// NOTE: Operation assumed to have `static get security()` method that returns
-//       security requirements, e.g:
-//
-//       static get security() {
-//         return [                            // array of OR requirements
-//           {                                 // hash of AND requirements
-//             Authorization: {
-//               klass:   Authorization,       // security implementation class
-//               options: [ 'Administrators' ] // configuration options
-//             }
-//           }
-//         ]
-//       }
-
 const authorize = async(headers = {}, requirements = []) => {
   const isPublic = requirements.length === 0
 

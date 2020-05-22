@@ -69,10 +69,10 @@ class Authorization {
   async isAuthorized(options) {
     let token
 
-    const hasCookie = this._headers['set-cookie']
+    const hasCookie = this._headers['cookie']
 
     if (hasCookie) {
-      const cookies = cookie.parse(this._headers['set-cookie'])
+      const cookies = cookie.parse(this._headers['cookie'])
       token = cookies.authorization
     }
 

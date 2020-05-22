@@ -35,7 +35,7 @@ describe('Authorization', () => {
       const cookie = 'authorization=INVALID_TOKEN; path=/; HttpOnly'
 
       try {
-        await Authorization.authorize({ 'set-cookie': cookie }, requirements)
+        await Authorization.authorize({ cookie }, requirements)
 
       } catch (error) {
         expect(error.message).to.eql('Invalid authorization token')
