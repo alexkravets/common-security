@@ -3,22 +3,17 @@
 const wait              = require('./helpers/wait')
 const publicKey         = require('./helpers/publicKey')
 const { expect }        = require('chai')
-const Authorization     = require('src/Authorization')
+const _Authorization    = require('src/Authorization')
 const createAccessToken = require('./helpers/createAccessToken')
 
-class CustomAuthorization extends Authorization {
+class Authorization extends _Authorization {
   get publicKey() {
     return publicKey
   }
 }
 
 const requirements = [
-  {
-    Authorization: {
-      klass:   CustomAuthorization,
-      options: [ 'Administrators' ]
-    }
-  }
+  Authorization.createRequirement([ 'Administrators' ])
 ]
 
 describe('Authorization', () => {
@@ -97,6 +92,12 @@ describe('Authorization', () => {
     })
   })
 
+  describe('Authorization.errors', () => {
+    it('returns errors map', () => {
+      expect(Authorization.errors).to.exist
+    })
+  })
+
   describe('Authorization.in', () => {
     it('returns authorization location', () => {
       expect(Authorization.in).to.eql('header')
@@ -111,13 +112,21 @@ describe('Authorization', () => {
 
   describe('Authorization.definition', () => {
     it('returns OAS security definition', () => {
-      const { definition } = CustomAuthorization
+      const { definition } = Authorization
 
-      expect(definition.CustomAuthorization.in).to.eql('header')
-      expect(definition.CustomAuthorization.type).to.eql('apiKey')
-      expect(definition.CustomAuthorization.name).to.eql('CustomAuthorization')
+      expect(definition.Authorization.in).to.eql('header')
+      expect(definition.Authorization.type).to.eql('apiKey')
+      expect(definition.Authorization.name).to.eql('Authorization')
 
       expect(Authorization.definition).to.exist
+    })
+  })
+
+  describe('Authorization.createRequirement(options = [])', () => {
+    it('returns requirement with empty options', () => {
+      const requirement = Authorization.createRequirement()
+
+      expect(requirement.Authorization.options).to.be.empty
     })
   })
 })

@@ -7,7 +7,16 @@ const AccessDeniedError  = require('./errors/AccessDeniedError')
 const UnauthorizedError  = require('./errors/UnauthorizedError')
 const { verify, decode } = require('jsonwebtoken')
 
+const errors = {
+  UnauthorizedError: { status: 'Unauthorized' },
+  AccessDeniedError: { status: 'Forbidden' }
+}
+
 class Authorization {
+  static get errors() {
+    return errors
+  }
+
   static get in() {
     return 'header'
   }
@@ -28,6 +37,15 @@ class Authorization {
 
   static get algorithm() {
     return 'RS256'
+  }
+
+  static createRequirement(options = []) {
+    return {
+      [this.name]: {
+        klass: this,
+        options
+      }
+    }
   }
 
   static authorize(headers, requirements) {
